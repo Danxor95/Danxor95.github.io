@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	  <title>UNF Virtual Learning Center AR</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+	  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+      <script src="./libs/mindar/mindar-image-three.prod.js"></script>
+      <script src="./main.js" type="module"></script>
+	  <script src="https://player.vimeo.com/api/player.js"></script>
+  
+      <style>
+        html, body {position: relative; margin: 0; width: 100%; height: 100%; overflow: hidden}
+        #theVid {
+			visibility: hidden;
+        }
+        
+      </style>
+  
+    </head>
+    <body>
+	
+	<a-scene mindar-image="imageTargetSrc: ./targets.mind;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-entity id="example-target" mindar-image-target="targetIndex: 0"></a-entity>
+      </a-entity>
+    </a-scene>
+	
+	<script>
+		function playPause(player) {
+		
+		player.getPaused().then(function(isPaused){
+			if(isPaused)
+				player.play();
+			else
+				player.pause();
+		});
+		
+		}
+		
+		
+		function tryPause(player)
+		{
+			player.getPaused().then(function(isPaused){
+			if(!isPaused)
+				player.pause();
+		});
+		}
+		
+		
+		function tryPlay(player)
+		{
+			player.getPaused().then(function(isPaused){
+			if(isPaused)
+				player.play();
+			});
+		}
+	  </script>
+	
+	
+
+      <div id="theVid">
+        <iframe id="vlcFrame" src="https://player.vimeo.com/video/1084615521?title=0&byline=0&portrait=0&speed=0&badge=0&autopause=0&player_id=0&app_id=58479" width="1920" height="1080" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="UNF Virtual Learning Center"></iframe> 
+		<button id="vlcPause" onclick="playPause(thePlayer)" style="background-color: transparent; border: none; position: absolute; left: 0px; top: 0px; width: 1920px; height: 1020px;"></button>
+		<script>
+			var theFrame = document.querySelector('#vlcFrame');
+			var thePlayer = new Vimeo.Player(theFrame);
+			const exampleTarget = document.querySelector('#example-target');
+			
+			exampleTarget.addEventListener("targetFound", event => {
+				console.log("target found");
+				tryPlay(thePlayer);
+			});
+	
+			exampleTarget.addEventListener("targetLost", event => {
+				console.log("target lost");
+				tryPause(thePlayer);
+			});
+		</script>
+      </div>
+	  
+	  
+
+    </body>
+  </html>
